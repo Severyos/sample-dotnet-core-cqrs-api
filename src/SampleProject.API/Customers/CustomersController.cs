@@ -1,34 +1,19 @@
-﻿using System.Net;
-using System.Threading.Tasks;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SampleProject.Application.Customers;
-using SampleProject.Application.Customers.RegisterCustomer;
+using System;
 
-namespace SampleProject.API.Customers
+namespace SampleProject.API.Controllers
 {
-    [Route("api/customers")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class CustomersController : Controller
+    public class CustomersController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        // Andra metoder...
 
-        public CustomersController(IMediator mediator)
+        [HttpGet("random")]
+        public IActionResult GetRandomCustomer()
         {
-            this._mediator = mediator;
+            var randomCustomer = new CustomerDto { Id = Guid.NewGuid() };
+            return Ok(randomCustomer);
         }
-
-        /// <summary>
-        /// Register customer.
-        /// </summary>
-        [Route("")]
-        [HttpPost]
-        [ProducesResponseType(typeof(CustomerDto), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> RegisterCustomer([FromBody]RegisterCustomerRequest request)
-        {
-           var customer = await _mediator.Send(new RegisterCustomerCommand(request.Email, request.Name));
-
-           return Created(string.Empty, customer);
-        }       
     }
 }
